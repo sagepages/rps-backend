@@ -87,8 +87,8 @@ func (game *Game) evaluateRound() {
 			}
 		}
 
-		playerOneMessage.MessageBody = p[0]
-		playerTwoMessage.MessageBody = p[1]
+		playerOneMessage.MessageBody = Message{MessageType: p[1].Move, MessageBody: p[0]}
+		playerTwoMessage.MessageBody = Message{MessageType: p[0].Move, MessageBody: p[1]}
 
 		// Reset Lobby
 		p[0].Move = ""
@@ -136,8 +136,12 @@ func (gamePool *GamePool) Run() {
 				}
 			default:
 				var result string = message.MessageType
-				var player *Player = message.MessageBody.(*Player)
-				if err := player.Conn.WriteJSON(Message{MessageType: "RoundResult", MessageBody: result}); err != nil {
+				var subMsg Message = message.MessageBody.(Message)
+				var player *Player = subMsg.MessageBody.(*Player)
+				var oppPlayerMove string = subMsg.MessageType
+
+				var replyMessage Message = Message{MessageType: "RoundResult", MessageBody: Message{MessageType: result, MessageBody: Message{MessageType: "OpponentMove", MessageBody: oppPlayerMove}}}
+				if err := player.Conn.WriteJSON(replyMessage); err != nil {
 					fmt.Println(err)
 				}
 
