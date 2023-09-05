@@ -2,7 +2,6 @@ package structs
 
 import (
 	"fmt"
-	"log"
 )
 
 type Pool struct {
@@ -27,12 +26,12 @@ func (pool *Pool) Run() {
 		select {
 		case player := <-pool.Register:
 			pool.Players[player] = true
-			log.Println("New Connection, ID: ", player.ID)
-			log.Println("Connection pool size: ", len(pool.Players))
+			// log.Println("New Connection, ID: ", player.ID)
+			// log.Println("Connection pool size: ", len(pool.Players))
 			break
 		case player := <-pool.Unregister:
 			delete(pool.Players, player)
-			log.Println("Connection pool size: ", len(pool.Players))
+			// log.Println("Connection pool size: ", len(pool.Players))
 			break
 		case message := <-pool.Broadcast:
 			for client := range pool.Players {

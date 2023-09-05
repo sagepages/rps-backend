@@ -2,7 +2,6 @@ package structs
 
 import (
 	"fmt"
-	"log"
 	"sync"
 
 	"github.com/gorilla/websocket"
@@ -58,7 +57,6 @@ func (game *Game) evaluateRound() {
 
 		var playerOneMessage Message = Message{}
 		var playerTwoMessage Message = Message{}
-		fmt.Println("Move 1: ", mv1, "Move 2", mv2)
 
 		if mv1 == mv2 {
 			playerOneMessage.MessageType = "tie"
@@ -109,15 +107,15 @@ func (gamePool *GamePool) Run() {
 			gamePool.Mutex.Lock()
 			gamePool.Games[game.ID] = game
 			gamePool.Mutex.Unlock()
-			log.Println("New Game has been created, Game ID: ", game.ID)
-			log.Println("Size of Game Pool: ", len(gamePool.Games))
+			// log.Println("New Game has been created, Game ID: ", game.ID)
+			// log.Println("Size of Game Pool: ", len(gamePool.Games))
 			break
 		case game := <-gamePool.DeleteGame:
 			gamePool.Mutex.Lock()
 			delete(gamePool.Games, game.ID)
 			gamePool.Mutex.Unlock()
-			log.Println("Game removed: ", game.ID)
-			log.Println("Size of Game Pool: ", len(gamePool.Games))
+			// log.Println("Game removed: ", game.ID)
+			// log.Println("Size of Game Pool: ", len(gamePool.Games))
 			break
 		case message := <-gamePool.Broadcast:
 			var roomID string = message.MessageBody.(*Game).ID
